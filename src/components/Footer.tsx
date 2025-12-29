@@ -4,10 +4,60 @@ import { downloadPDF } from '../utils/pdfOperations';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import type { UploadedFile } from '../types';
+import { useState, useEffect } from 'react';
 
 const Footer = () => {
   const { outputFiles, showSuccess } = useApp();
   const { addToast } = useToast();
+  const [animFrame, setAnimFrame] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimFrame(prev => (prev + 1) % 60);
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getPlatypusArt = () => {
+    const isBlinking = animFrame >= 28 && animFrame <= 31;
+    const eye = isBlinking ? '██' : '. ';
+
+    const frameInCycle = Math.floor((animFrame / 15) % 4);
+
+    if (frameInCycle === 0) {
+      // Neutral position 1
+      return `         █████████░
+ ░░░░░░░███${eye}██████░ ████████████████████
+░░░░░░░░███████████░██████████████████████░░░░░░░░░░
+ ░░░░░░░░██████████░██████████████████████░░░░░░░░░░░
+                      ████████████████████░░░░░░░░░░
+                        █████     █████`;
+    } else if (frameInCycle === 1) {
+      // Tail wag position 1
+      return `         █████████░
+ ░░░░░░░███${eye}██████░ ████████████████████  ░░░░░░░░░░
+░░░░░░░░███████████░██████████████████████░░░░░░░░░░
+ ░░░░░░░░██████████░██████████████████████░░░░░░░░░░
+                      ████████████████████░░░░░░░░░
+                        █████     █████`;
+    } else if (frameInCycle === 2) {
+      // Neutral position 2
+      return `         █████████░
+ ░░░░░░░███${eye}██████░ ████████████████████
+░░░░░░░░███████████░██████████████████████░░░░░░░░░░
+ ░░░░░░░░██████████░██████████████████████░░░░░░░░░░░
+                      ████████████████████░░░░░░░░░░
+                        █████     █████`;
+    } else {
+      // Tail wag position 2
+      return `         █████████░
+ ░░░░░░░███${eye}██████░ ████████████████████
+░░░░░░░░███████████░██████████████████████░░░░░░░░░
+ ░░░░░░░░██████████░██████████████████████░░░░░░░░░░
+                      ████████████████████░░░░░░░░░░
+                        █████     █████      ░░░░░░░░`;
+    }
+  };
 
   const handleDownloadAll = async () => {
     if (outputFiles.length === 0) return;
@@ -79,7 +129,7 @@ const Footer = () => {
             </svg>
             shane@mto.sh
           </a>
-          <a href="https://github.com/shanemtosh/pdf-toolkit" target="_blank" rel="noopener" className="footer-link">
+          <a href="https://github.com/shanemtosh/pdf-platypus" target="_blank" rel="noopener" className="footer-link">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
             </svg>
@@ -88,20 +138,15 @@ const Footer = () => {
         </div>
         
         <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <pre style={{ 
-                fontFamily: 'monospace', 
-                fontSize: '10px', 
-                lineHeight: '1', 
+            <pre style={{
+                fontFamily: 'monospace',
+                fontSize: '10px',
+                lineHeight: '1.2',
                 color: 'var(--color-text-tertiary)',
                 whiteSpace: 'pre',
                 textAlign: 'left'
             }}>
-{`         █████████░
- ░░░░░░░███. ██████░ ████████████████████
-░░░░░░░░███████████░██████████████████████░░░░░░░░░
- ░░░░░░░░██████████░██████████████████████░░░░░░░░░░
-                      ████████████████████░░░░░░░░░
-                        █████     █████`}
+{getPlatypusArt()}
             </pre>
             <p className="footer-credit" style={{ marginTop: '1rem' }}>PDF Platypus | Made with care | No tracking, no analytics, no BS</p>
         </div>
